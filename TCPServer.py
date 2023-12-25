@@ -42,15 +42,16 @@ def handle_client(conn, addr):
     with conn:
         while True:
             data = conn.recv(1024)
+            if not data:
+                print(f"Подключение клиента с {ip_address} закрыто")
+                break
             bytes = list(data)
             inputType = datasplit(1, data)
             relayNo = datasplit(3, data)
             datastrHex = bytearray(bytes).hex()
             stateVal = datasplit(4, data)
             analogState = analogdata(6, datastrHex)
-            if not data:
-                print(f"Подключение клиента с {ip_address} закрыто")
-                break
+
             if inputType == 'DI':
                 print(f"Цифровой вход: {relayNo} Статус: {stateVal}")
             else:
@@ -82,6 +83,7 @@ def main():
         while True:
             conn, addr = s.accept()
             thread = threading.Thread(target=handle_client, args=(conn, addr))
+            print(f'ID соединения: {id(thread)}')
             thread.start()
 
 if __name__ == "__main__":
