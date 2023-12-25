@@ -25,6 +25,7 @@ def analogdata(pos, datastrHex):
     pt100Value = int(193 * pValue - 225)
     #print(pHex)
     #print(pValue)
+
     #print(pt100Value)
     #193 * CAST( @ value as decimal(19, 8)) - 220
     try:
