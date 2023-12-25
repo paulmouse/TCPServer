@@ -1,6 +1,11 @@
 import socket
 import datetime
 
+def get_local_ip():
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    return local_ip
+
 def datasplit(pos, data):
     relays = {'16': 1, '17': 2, '18': 3, '19': 4, '20': 5, '21': 6, '22': 7, '23': 8, '255': 'ON', '0': 'OFF',
               '5': 'DI', '4': 'AI'}
@@ -12,6 +17,7 @@ def datasplit(pos, data):
         return ds
     except:
         return ''
+
 def analogdata(pos, datastrHex):
     pHex = datastrHex[pos:pos + 4]
     pDec = int(pHex, 16)
@@ -32,7 +38,8 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
-        print(f"Сервер запущен и ожидает подключений на порту {PORT}...")
+        localIp = get_local_ip()
+        print(f"Сервер запущен по адресу {localIp} и ожидает подключений на порту {PORT}...")
         with open('tcp_requests.log', 'a') as log_file:
             log_file.write(f"{datetime.datetime.now()}\tStart\n")
         conn, addr = s.accept()
@@ -55,7 +62,7 @@ def main():
                 #print(f"Данные от {ip_address}: {datastrHex}")
                 if inputType == 'DI':
                      print(f"Цифровой вход: {relayNo} Статус: {stateVal}")
-                else: print(f"Аналоговый вход: {analogState}");
+                else: print(f"Аналоговый вход: 1 Значение: {analogState}");
                # print(f"Тип входа: {inputType}")
                 with open('tcp_requests.log', 'a') as log_file:
                     if inputType == 'DI':
