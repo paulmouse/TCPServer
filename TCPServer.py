@@ -1,5 +1,11 @@
 import socket
 import datetime
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+#hostIp = config.get('settings', 'hostip')
+#port = int(config.get('settings', 'port'))
 
 def get_local_ip():
     hostname = socket.gethostname()
@@ -25,7 +31,6 @@ def analogdata(pos, datastrHex):
     pt100Value = int(193 * pValue - 225)
     #print(pHex)
     #print(pValue)
-
     #print(pt100Value)
     #193 * CAST( @ value as decimal(19, 8)) - 220
     try:
@@ -33,8 +38,8 @@ def analogdata(pos, datastrHex):
     except:
         return ''
 def main():
-    HOST = '192.168.0.51'  # Принимаем подключения со всех интерфейсов
-    PORT = 6542
+    HOST = get_local_ip() # Принимаем подключения со всех интерфейсов
+    PORT = int(config.get('settings', 'port'))
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
